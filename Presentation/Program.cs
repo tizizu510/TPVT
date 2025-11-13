@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using Microsoft.OpenApi.Models;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -27,8 +28,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateIssuer = false,//desactivo esto 
+            ValidateAudience = false,//desactivo eso 
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
@@ -53,7 +54,9 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<IEventoService, EventoService>();
-builder.Services.AddSingleton<AuthService>(new AuthService(key));
+builder.Services.AddScoped<IAuthService>(sp =>
+    new AuthService(key));//agregue esto para la interfaz
+//builder.Services.AddSingleton<IAuthService>(new AuthService(key));
 builder.Services.AddHttpClient(); // habilita HttpClientFactory
 builder.Services.AddHttpClient<WeatherService>();
 
